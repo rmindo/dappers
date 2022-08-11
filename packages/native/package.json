@@ -1,0 +1,34 @@
+{
+  "name": "@dappers/native",
+  "version": "1.0.0",
+  "description": "A customizable react native framework with state or object aggregator and dispatcher that makes it easy to access all aggregated data from all components including children.",
+  "main": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmindo/dapper.git",
+    "directory": "packages/native"
+  },
+  "homepage": "https://github.com/rmindo/dapper/tree/main/packages/native#readme",
+  "keywords": [
+    "logic",
+    "state",
+    "react",
+    "native",
+    "dapper",
+    "models",
+    "real-time",
+    "aggregator",
+    "dispatcher"
+  ],
+  "author": "Ruel Mindo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rmindo/dapper/issues"
+  },
+  "directories": {
+    "example": "example"
+  }
+}
