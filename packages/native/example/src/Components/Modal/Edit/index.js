@@ -1,5 +1,5 @@
 import React from 'react'
-import {derive} from '@dapper/native'
+import {derive} from '@dappers/native'
 
 
 /**

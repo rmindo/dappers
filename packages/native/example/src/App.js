@@ -1,5 +1,5 @@
 import React from 'react'
-import {Navigator} from '@dapper/native'
+import {Navigator} from '@dappers/native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 
 /**
