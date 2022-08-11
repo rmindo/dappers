@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rmindo/dapper.git",
+    "url": "git+https://github.com/rmindo/dappers.git",
     "directory": "packages/native"
   },
-  "homepage": "https://github.com/rmindo/dapper/tree/main/packages/native#readme",
+  "homepage": "https://github.com/rmindo/dappers/tree/main/packages/native#readme",
   "keywords": [
     "logic",
     "state",
