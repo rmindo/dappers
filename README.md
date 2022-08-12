@@ -1,6 +1,6 @@
 # Dappers
 
-A customizable react framework with state or object aggregator and dispatcher that makes it easy to access all aggregated data from all components including children.
+A customizable react framework with state or object dispatcher that makes it easy to access all aggregated data from all components including children.
 
 ## Features
 * Flexible and easy to use.
@@ -12,6 +12,7 @@ A customizable react framework with state or object aggregator and dispatcher th
 
 ## Build it with
 * [React Native](https://github.com/rmindo/dappers/tree/main/packages/native)
+* ReactJS (Coming Soon)
 
 
 # Documentation
@@ -35,7 +36,7 @@ this.props.route
 ```
 
 #### dispatch
-A straightforward state dispatcher or object aggregator.
+A straightforward dispatcher, the object is dispatched globally and can be access through component properties.
 ```js
 // Dispatch with object
 this.props.dispatch({greetings: 'Hello World'})
@@ -176,7 +177,7 @@ Basic event listener and emitter.
     ```
 
 * ##### events.once
-    Add event listener and remove the after executing once
+    Add event listener and remove after executing once
     ##### Predefined Events
 
     1. **componentMounted**
