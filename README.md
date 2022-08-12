@@ -180,7 +180,8 @@ Basic event listener and emitter.
     Add event listener and remove after executing once
     ##### Predefined Events
 
-    1. **componentMounted** - Since dappers mount and unmounts the component every time switching a screen to update the properties of a component, this event is useful if you want to execute the code once the component is mounted for the first time.
+    1. **componentMounted**
+      - Since dappers mount and unmounts the component every time switching a screen to update the properties of a component, this event is useful if you want to execute the code once the component is mounted for the first time.
 
     ```js
     // Add event listener to the list
@@ -238,8 +239,10 @@ Access from a class component
 ## Components
 #### Navigator
 Navigator is the context provider and has two properties, initial and dispatch.
-1. **initial** - Initial screen to display (required)
-2. **dispatch** - The dispatch only occurs once before the initial route and it is dispatched globally. It can hold an initial state or constant object or use to dispatch a business logic.
+1. **initial**
+  - Initial screen to display (required)
+2. **dispatch**
+  - The dispatch only occurs once before the initial route and it is dispatched globally. It can hold an initial state or constant object or use to dispatch a business logic.
     
 ```js
 <Navigator initial={'Loader'} dispatch={{greetings: 'Hello World'}}>
