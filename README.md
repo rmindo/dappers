@@ -171,7 +171,7 @@ Basic event listener and emitter.
     Add custom event listener
     ```js
     // Add event listener to the list
-    events.on('MyEvent', () => {
+    this.props.events.on('MyEvent', () => {
     // Code here
     })
     ```
@@ -184,13 +184,13 @@ Basic event listener and emitter.
         - Since dappers mount and unmounts the component every time switching a screen to update the properties of a component, this event is useful if you want to execute the code once the component is mounted for the first time.
 
     ```js
-    // Add event listener to the list
-    events.once('MyEventOnce', () => {
+    // Add custome event listener to the list
+    this.props.events.once('MyEventOnce', () => {
         // Execute code once
     })
     
     // Predefined event
-    events.once('componentMounted', () => {
+    this.props.events.once('componentMounted', () => {
         // Execute code once
     })
     ```
@@ -198,13 +198,13 @@ Basic event listener and emitter.
 * ##### events.emit
     Trigger the event that is recently added to the list.
     ```js
-    events.emit('MyEvent')
+    this.props.events.emit('MyEvent')
     ```
 
 * ##### events.remove
     Simply remove the event from the list.
     ```js
-    events.remove('MyEvent')
+    this.props.events.remove('MyEvent')
     ```
 
 
