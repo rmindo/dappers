@@ -180,8 +180,7 @@ Basic event listener and emitter.
     Add event listener and remove after executing once
     ##### Predefined Events
 
-    1. **componentMounted**
-        Since dappers mount and unmounts the component every time switching a screen to update the properties of a component, this event is useful if you want to execute the code once the component is mounted for the first time.
+    1. **componentMounted** - Since dappers mount and unmounts the component every time switching a screen to update the properties of a component, this event is useful if you want to execute the code once the component is mounted for the first time.
 
     ```js
     // Add event listener to the list
