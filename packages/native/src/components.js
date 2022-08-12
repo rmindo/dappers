@@ -119,18 +119,17 @@ export const Navigator = function({initial, children, dispatch}) {
       return [
         ((name) => {
           if(screens) {
+            var children = null
             var Component = screens[name]
-
             /**
-             * Reset route parameters if previous route using it,
+             * Reset route data if previous route using it,
              * to ensure only current route using it.
              */
             if(Object.keys(context.data).length > 0) {
               context.data = {}
             }
-
             if(Component) {
-              var children = (
+              children = (
                 <Component
                   ref={(ref) => {
                     if(ref) {
@@ -140,8 +139,8 @@ export const Navigator = function({initial, children, dispatch}) {
                   {...props}
                 />
               )
-              return React.createElement(View, {flex: 1, key: name.toLowerCase()}, children)
             }
+            return React.createElement(View, {flex: 1, key: name.toLowerCase()}, children)
           }
         })
         (props.route.name),
