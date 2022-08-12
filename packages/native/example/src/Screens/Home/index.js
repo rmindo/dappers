@@ -26,7 +26,7 @@ from 'react-native'
    */
   render() {
     const {count} = this.state
-    const {text, navigate} = this.props
+    const {text, greetings, navigate} = this.props
 
     const _default = 'Edit and dispatch globally'
     return (
@@ -40,7 +40,7 @@ from 'react-native'
             marginBottom: 20,
             alignItems: 'center'
           }}>
-          <Text style={{fontSize: 30}}>Welcome Home</Text>
+          <Text style={{fontSize: 30}}>{greetings}</Text>
           <Text>Check the app to see the dappers features.</Text>
         </View>
 
