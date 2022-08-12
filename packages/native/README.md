@@ -6,6 +6,10 @@ A customizable react native framework with state or object aggregator and dispat
 ```
 npm install @dappers/native
 ```
+Or
+```
+yarn add @dappers/native
+```
 
 ## Documentation
 [https://github.com/rmindo/dappers](https://github.com/rmindo/dappers)

@@ -1,7 +1,7 @@
 {
   "name": "@dappers/native",
   "version": "1.0.0",
-  "description": "A customizable react native framework with state or object aggregator and dispatcher that makes it easy to access all aggregated data from all components including children.",
+  "description": "A customizable react framework with state or object dispatcher that makes it easy to access all aggregated data from all components including children.",
   "main": "src/index.js",
   "publishConfig": {
     "access": "public"
