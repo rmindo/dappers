@@ -36,7 +36,7 @@ this.props.route
 ```
 
 #### dispatch
-A straightforward dispatcher, the object will be dispatched globally and can be access through component properties.
+A straightforward dispatcher, the object will be dispatched globally and can be access from component properties.
 ```js
 // Dispatch with object
 this.props.dispatch({greetings: 'Hello World'})
