@@ -221,6 +221,19 @@ export default derive((props) => {
 ))
 ```
 
+Access from a class component
+```js
+  class Home extends React.PureComponent {
+    render() {
+      return (
+        <View>
+          <Text>{this.props.route.data.message}</Text>
+        </View>
+      )
+    }
+  }
+```
+
 
 ## Components
 #### Navigator
