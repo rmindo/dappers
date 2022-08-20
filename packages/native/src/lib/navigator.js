@@ -100,7 +100,7 @@ export default ([state, setState], context) => {
     o.setRoute({
       ...prev,
       data: {
-        ...context.data[prev.name],
+        ...(prev.name !== state.route.name ? context.data[prev.name] : {}),
         ...args.data
       }
     }, args)
