@@ -4,9 +4,37 @@
 import properties from './properties'
 
 /**
- * 
+ * merge dispatched states
+ * @returns 
  */
-export default (dispatch, context) => {
+export const mergeProps = ({route, properties}, props) => {
+  var data = {}
+
+  for(var {scope, payload} of properties) {
+    if(scope) {
+
+      if(typeof scope == 'string') {
+        throw new Error(
+          'Expected scope to be of type `array` but received a `string`.'
+        )
+      }
+
+      if(scope.includes(route.name)) {
+        data = Object.assign(data, payload)
+      }
+    }
+    else {
+      data = Object.assign(data, payload)
+    }
+  }
+  return Object.assign(data, props)
+}
+
+
+/**
+ * Set properties
+ */
+export const setProps = (dispatch, context) => {
   var props = properties(context)
   /**
    * Dispatch at once before the initial screen
@@ -14,12 +42,12 @@ export default (dispatch, context) => {
   if(props.navigate.history.length == 1) {
     if(dispatch) {
       if(typeof dispatch == 'function') {
-        context.props = dispatch(props)
+        context.properties.push({payload: dispatch(props)})
       }
       else {
-        context.props = dispatch
+        context.properties.push({payload: dispatch})
       }
     }
   }
-  return {props: Object.assign(context.props, props)}
+  return context.props = mergeProps(context, props)
 }
