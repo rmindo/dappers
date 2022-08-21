@@ -98,16 +98,25 @@ export default ([state, setState], context) => {
      * Set new route
      */
     var prev = history[history.length-1]
+    var screen = context.screens[prev.name]
+
     o.setRoute({
       ...prev,
       data: {
         /**
          * Only merge if current screen is not equal to the previous screen
          */
-        ...(prev.name !== state.route.name ? context.screens[prev.name].data : {}),
+        ...(prev.name !== state.route.name ? screen.data : {}),
         ...args.data
       }
     }, args)
+
+    /**
+     * Reset route data
+     */
+    if(prev.name == state.route.name) {
+      screen.data = null
+    }
     /**
      * Will be use in the "hardwareBackPress" event
      */
@@ -131,6 +140,7 @@ export default ([state, setState], context) => {
         name: args.screen,
         index: history.length
       }
+      // var screen = context.screens[route.name]
       /**
        * Preserve the route parameters to use it to populate back
        * to previous screen along with new data added from back function
