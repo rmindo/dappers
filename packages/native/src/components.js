@@ -9,17 +9,15 @@ from 'react-native'
 /**
  * Props dispatcher
  */
-import dispatcher from './dispatcher'
+import {mergeProps, setProps} from './dispatcher'
 
 /**
  * Context
  */
 var context = {
-  ref: {},
-  data: {},
-  state: {},
-  props: {},
-  options: {}
+  route: {},
+  screens: {},
+  properties: []
 }
 
 
@@ -29,19 +27,21 @@ var context = {
  */
 export const derive = (Child) => {
   return React.memo((props) => {
-    return <Child {...context.props} {...props}/>
+    return <Child {...props} {...context.props}/>
   })
 }
 
+
 /**
  * Reduce children
- * @param {object} props 
  * @param {object} children 
+ * @param {object} props 
  */
 const reducer = (children, props) => children.reduce((items, item) => {
   var components = []
-  
+
   if(typeof item.type == 'function') {
+
     var child = item.type(props)
     if(child) {
       var {type, children} = child.props
@@ -54,7 +54,7 @@ const reducer = (children, props) => children.reduce((items, item) => {
           if(children) {
             items[type] = React.Children.toArray(children).reduce((screens, {props:{name, component}}) => {
               if(component) {
-                screens[name] = component
+                screens[name] = {ref: null, data: null, state: [], component}
               }
               return screens
             }, {})
@@ -98,15 +98,15 @@ export const Navigator = function({initial, children, dispatch}) {
      * Start rendering components
      */
     if(children) {
-      var {props} = dispatcher(dispatch, context)
+      var props = setProps(dispatch, context)
       var {screens, navigation, components} = reducer(React.Children.toArray(children), props)
-
       /**
        * Set state holder empty at once
        */
       if(props.navigate.history.length == 1) {
+
         if(screens) {
-          Object.keys(screens).forEach(name => context.state[name] = [])
+          context.screens = screens
         }
 
         Linking.addEventListener('url', props.navigate.link)
@@ -118,23 +118,24 @@ export const Navigator = function({initial, children, dispatch}) {
        */
       return [
         ((name) => {
-          if(screens) {
-            var children = null
-            var Component = screens[name]
+          if(Object.keys(context.screens).length > 0) {
+
+            var child = null
+            var Component = context.screens[name].component
 
             if(Component) {
-              children = (
+              child = (
                 <Component
                   ref={(ref) => {
                     if(ref) {
-                      context.ref[name] = ref
+                      context.screens[name].ref = ref
                     }
                   }}
                   {...props}
                 />
               )
             }
-            return React.createElement(View, {flex: 1, key: name.toLowerCase()}, children)
+            return React.createElement(View, {flex: 1, key: name.toLowerCase()}, child)
           }
         })
         (props.route.name),
@@ -154,9 +155,11 @@ export const Navigator = function({initial, children, dispatch}) {
         /**
          * Other components
          */
-        ...((items) => items.map((child, key) => (
-          React.cloneElement(child, {...child.props, key}, child.props.children)
-        )))
+        ...((items) => items.map((child, key) => {
+          return (
+            React.cloneElement(child, {...child.props, ...props, key}, child.props.children)
+          )
+        }))
         (components)
       ]
     }
