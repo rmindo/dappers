@@ -51,9 +51,12 @@ export default ([state], context) => ({
        * Update state with previous state value at once
        */
       case 'componentMounted':
-        var route = state.route.name
-        if(context.ref[route]) {
-          return update(route, state.persist, context)
+        var route = state.route
+        /**
+         * Execute only once if ref is added already to the screen, see context.screens
+         */
+        if(context.screens[route.name].ref) {
+          return update(route.name, state.persist, context)
         }
         cb()
       break
