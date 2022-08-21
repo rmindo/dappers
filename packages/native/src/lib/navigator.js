@@ -92,6 +92,7 @@ export default ([state, setState], context) => {
    */
    o.back = (args = {}) => {
     args = _default(args)
+
     history.pop()
     /**
      * Set new route
@@ -100,7 +101,10 @@ export default ([state, setState], context) => {
     o.setRoute({
       ...prev,
       data: {
-        ...(prev.name !== state.route.name ? context.data[prev.name] : {}),
+        /**
+         * Only merge if current screen is not equal to the previous screen
+         */
+        ...(prev.name !== state.route.name ? context.screens[prev.name].data : {}),
         ...args.data
       }
     }, args)
@@ -131,7 +135,8 @@ export default ([state, setState], context) => {
        * Preserve the route parameters to use it to populate back
        * to previous screen along with new data added from back function
        */
-      context.data[route.name] = Object.assign(context.data[route.name] ?? {}, route.data)
+      context.screens[route.name].data = route.data
+      
       /**
        * Push new route
        */
@@ -154,9 +159,7 @@ export default ([state, setState], context) => {
       /**
        * Update the state again with the latest state added to the list
        */
-      if(context.ref[route.name]) {
-        update(route.name, args.persist, context)
-      }
+      update(route.name, args.persist, context)
       /**
        * Set new route
        */
