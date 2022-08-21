@@ -16,8 +16,28 @@ import navigator from './lib/navigator'
 export default (context) => {
   var [state, setState] = React.useState(context.default)
 
+  /**
+   * Current route
+   */
+  context.route = state.route
+
+  /**
+   * Add to props
+   */
+  if(state.dispatch) {
+    var data = state.dispatch
+    
+    if(data) {
+      if(data?.payload) {
+        context.properties.push(data)
+      }
+      else {
+        context.properties.push({payload: data})
+      }
+    }
+  }
+
   return {
-    ...state.dispatch,
     /**
      * Route
      */
@@ -36,7 +56,7 @@ export default (context) => {
      */
     dispatch: (arg) => {
       if(typeof arg == 'function') {
-        arg = arg(context.props)
+        arg = arg()
       }
       setState({...state, dispatch: arg})
     },
