@@ -157,7 +157,7 @@ export const Navigator = function({initial, children, dispatch}) {
          */
         ...((items) => items.map((child, key) => {
           return (
-            React.cloneElement(child, {...child.props, ...props, key}, child.props.children)
+            React.cloneElement(child, {...child.props, key}, child.props.children)
           )
         }))
         (components)

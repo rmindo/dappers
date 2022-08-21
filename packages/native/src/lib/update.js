@@ -23,8 +23,8 @@ export default (name, persist, context) => {
   /**
    * Push the current state to the list of state
    */
-  var {ref} = context.screens[name]
+  var {ref, state} = context.screens[name]
   if(ref) {
-    context.screens[name].state.push(ref.state)
+    state.push(ref.state)
   }
 }
