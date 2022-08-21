@@ -7,7 +7,7 @@ import properties from './properties'
  * merge dispatched states
  * @returns 
  */
-export const mergeProps = ({route, properties}, props) => {
+const merge = ({route, properties}, props) => {
   var data = {}
 
   for(var {scope, payload} of properties) {
@@ -34,7 +34,7 @@ export const mergeProps = ({route, properties}, props) => {
 /**
  * Set properties
  */
-export const setProps = (dispatch, context) => {
+export default (dispatch, context) => {
   var props = properties(context)
   /**
    * Dispatch at once before the initial screen
@@ -49,5 +49,5 @@ export const setProps = (dispatch, context) => {
       }
     }
   }
-  return context.props = mergeProps(context, props)
+  return context.props = merge(context, props)
 }

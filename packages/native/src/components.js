@@ -9,7 +9,7 @@ from 'react-native'
 /**
  * Props dispatcher
  */
-import {mergeProps, setProps} from './dispatcher'
+import dispatcher from './dispatcher'
 
 /**
  * Context
@@ -98,7 +98,7 @@ export const Navigator = function({initial, children, dispatch}) {
      * Start rendering components
      */
     if(children) {
-      var props = setProps(dispatch, context)
+      var props = dispatcher(dispatch, context)
       var {screens, navigation, components} = reducer(React.Children.toArray(children), props)
       /**
        * Set state holder empty at once
