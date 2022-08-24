@@ -52,7 +52,7 @@
     * Execute event before the initial screen mounted
     */
    if(props.navigate.history.length == 1) {
-     props.events.emit('initial')
+     props.events.emit('start')
    }
  
    return context.props = mergeProps(context, props)
