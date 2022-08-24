@@ -4,21 +4,19 @@
  import properties from './properties'
 
  /**
-  * Get dispatched states
+  * Merge properties from context and new properties
   * @returns 
   */
- const mergeProps = ({route, properties}, props) => {
+ const merge = ({route, properties}, props) => {
    var data = {}
  
    for(var {scope, payload} of properties) {
      if(scope) {
- 
        if(typeof scope == 'string') {
          throw new Error(
            'Expected scope to be of type `array` but received a `string`.'
          )
        }
- 
        if(scope.includes(route.name)) {
          data = Object.assign(data, payload)
        }
@@ -35,19 +33,20 @@
   * 
   */
  export default (dispatch, context) => {
-   var props = properties(context)
+   var props = merge(context, properties(context))
  
    /**
     * Dispatch props
     */
    if(dispatch) {
      if(typeof dispatch == 'function') {
-       context.properties.push({payload: dispatch(props)})
+       props = Object.assign(props, dispatch(props))
      }
      else {
-       context.properties.push({payload: dispatch})
+       props = Object.assign(props, dispatch)
      }
    }
+   
    /**
     * Execute event before the initial screen mounted
     */
@@ -55,5 +54,5 @@
      props.events.emit('start')
    }
  
-   return context.props = mergeProps(context, props)
+   return context.props = props
  }
