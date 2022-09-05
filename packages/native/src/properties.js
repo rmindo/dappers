@@ -21,44 +21,21 @@ export default (context) => {
    */
   context.route = state.route
 
-  /**
-   * Add to props
-   */
-  if(state.dispatch) {
-    var data = state.dispatch
-    
-    if(data) {
-      if(data?.payload) {
-        context.properties.push(data)
-      }
-      else {
-        context.properties.push({payload: data})
-      }
-    }
-  }
-
   return {
-    /**
-     * Route
-     */
-    route: Object.seal(state.route),
-    /**
-     * Event Listener
-     */
-    events: Object.seal(events([state, setState], context)),
-    /**
-     * Navigator
-     */
-    navigate: Object.seal(navigator([state, setState], context)),
-    /**
-     * Dispatch data into props
-     * @param {object} arg 
-     */
-    dispatch: (arg) => {
-      if(typeof arg == 'function') {
-        arg = arg()
-      }
-      setState({...state, dispatch: arg})
-    },
+    state,
+    props: {
+      /**
+       * Route
+       */
+      route: Object.seal(state.route),
+      /**
+       * Event Listener
+       */
+      events: Object.seal(events([state, setState], context)),
+      /**
+       * Navigator
+       */
+      navigate: Object.seal(navigator([state, setState], context)),
+    }
   }
 }

@@ -2,22 +2,44 @@
 /**
 * Update state when mounted
 * @param {string} name
-* @param {object} args
 * @param {object} context
+* @param {object} args
 * @returns {void}
 */
-export default (name, persist, context) => {
+export default (name, context, args) => {
+
   /**
-   * Update the state with the most recent state
+   * Re-update after the state of a component is updated with the most recent state
    */
   setTimeout(() => {
     var {ref, state} = context.screens[name]
+    
+    state = state.filter(i => i)
     if(ref) {
-      var last = state[0]
-      if(persist) {
-        last = state[state.length-1]
+      var last = state[state.length-1]
+      if(last) {
+        /**
+         * If the component have to set a state
+         */
+        if(args.addState) {
+          if(typeof args.addState == 'function') {
+            last = args.addState(last)
+          }
+          else {
+            last = args.addState
+          }
+          ref.setState(last)
+        }
+        else {
+          /**
+           * If the component needs to persist the state
+           * then set the last group of state
+           */
+          if(args.persistState) {
+            ref.setState(last)
+          }
+        }
       }
-      ref.setState(last)
     }
   })
   /**

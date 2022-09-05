@@ -56,7 +56,7 @@ export default ([state], context) => ({
          * Execute only once if ref is added already to the screen, see context.screens
          */
         if(context.screens[route.name].ref) {
-          return update(route.name, state.persist, context)
+          return update(route.name, context, state)
         }
         cb()
       break

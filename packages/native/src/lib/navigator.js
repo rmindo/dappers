@@ -10,7 +10,6 @@ import update from './update'
 
 
 
-
 /**
  * Set Default
  * @param  {mixed} args 
@@ -19,11 +18,13 @@ import update from './update'
 const _default = (...args) => {
   var _default = {
     data: {},
+    skip: null,
     screen: null,
-    persist: true,
+    history: true,
     dispatch: null,
+    addState: null,
+    persistState: true,
   }
-
   /**
    * 
    * Check if argument has keys from _default
@@ -41,9 +42,6 @@ const _default = (...args) => {
     if(hasDefault(args[0])) {
       return Object.assign(_default, args[0])
     }
-    else {
-      return Object.assign(_default, {data: args[0]})
-    }
   }
   /**
    * String argument
@@ -53,12 +51,11 @@ const _default = (...args) => {
       if(hasDefault(args[1])) {
         return Object.assign(_default, args[1], {screen: args[0]})
       }
-      else {
-        return Object.assign(_default, {data: args[1], screen: args[0]})
-      }
     }
     return Object.assign(_default, {screen: args[0]})
   }
+  
+  return _default
 }
 
 
@@ -95,21 +92,26 @@ export default ([state, setState], context) => {
 
     history.pop()
     /**
-     * Set new route
+     * Skip route
+     */
+    if(args.skip) {
+      history = history.slice(0,-args.skip)
+    }
+
+    /**
+     * Get previous route and screen
      */
     var prev = history[history.length-1]
     var screen = context.screens[prev.name]
 
-    o.setRoute({
-      ...prev,
-      data: {
-        /**
-         * Only merge if current screen is not equal to the previous screen
-         */
-        ...(prev.name !== state.route.name ? screen.data : {}),
-        ...args.data
-      }
-    }, args)
+    /**
+     * Only merge if current screen is not equal to the previous screen
+     */
+    var data = {
+      ...(prev.name !== state.route.name ? screen.data : {}),
+      ...args.data
+    }
+    o.setRoute({...prev, data}, args)
 
     /**
      * Reset route data
@@ -118,7 +120,7 @@ export default ([state, setState], context) => {
       screen.data = null
     }
     /**
-     * Will be use in the "hardwareBackPress" event
+     * Set true to use it in "hardwareBackPress" event
      */
     return true
   }
@@ -133,28 +135,33 @@ export default ([state, setState], context) => {
     args = _default(...args)
 
     if(args.screen) {
-      var prev = history[history.length-1]
-      var route = {
-        prev: prev.name,
+      var prevRoute = history[history.length-1]
+      var nextRoute = {
         data: args.data,
         name: args.screen,
-        index: history.length
+        prev: prevRoute.name
       }
-      // var screen = context.screens[route.name]
+      var screen = context.screens[nextRoute.name]
       /**
        * Preserve the route parameters to use it to populate back
        * to previous screen along with new data added from back function
        */
-      context.screens[route.name].data = route.data
-      
-      /**
-       * Push new route
-       */
-      history.push(route)
-      /**
-       * Set new route
-       */
-      o.setRoute(route, args)
+      if(screen) {
+        screen.data = nextRoute.data
+        /**
+         * Add new route
+         */
+        if(args.history) {
+          history.push(nextRoute)
+        }
+        /**
+         * Set new route
+         */
+        o.setRoute(nextRoute, args)
+      }
+      else {
+        throw new Error(`No route "${route.name}" found.`)
+      }
     }
   }
 
@@ -169,11 +176,11 @@ export default ([state, setState], context) => {
       /**
        * Update the state again with the latest state added to the list
        */
-      update(route.name, args.persist, context)
+      update(route.name, context, args)
       /**
        * Set new route
        */
-      setState({route, history, persist: args.persist, dispatch: args.dispatch})
+      setState({route, history, dispatch: args.dispatch})
     }
   }
 

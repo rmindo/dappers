@@ -15,22 +15,20 @@ import dispatcher from './dispatcher'
  * Context
  */
 var context = {
-  route: {},
-  screens: {},
+  screens: null,
   properties: []
 }
 
 
 /**
  * Pass props to children components
- * @param {*} Child 
+ * @param {function} Child 
  */
 export const derive = (Child) => {
   return React.memo((props) => {
     return <Child {...props} {...context.props}/>
   })
 }
-
 
 /**
  * Reduce children
@@ -54,7 +52,12 @@ const reducer = (children, props) => children.reduce((items, item) => {
           if(children) {
             items[type] = React.Children.toArray(children).reduce((screens, {props:{name, component}}) => {
               if(component) {
-                screens[name] = {ref: null, data: null, state: [], component}
+                screens[name] = {
+                  ref: null,
+                  data: null,
+                  state: [],
+                  component
+                }
               }
               return screens
             }, {})
@@ -75,6 +78,16 @@ const reducer = (children, props) => children.reduce((items, item) => {
       items['components'] = components
     }
   }
+
+  /**
+   * Add to global context
+   */
+  if(context.screens == null) {
+    if(items['screens']) {
+      context.screens = items['screens'] 
+    }
+  }
+
   return items
 }, {})
 
@@ -89,7 +102,6 @@ export const Navigator = function({initial, children, dispatch}) {
   if(initial) {
     var initial = {
       data: {},
-      index: 0,
       name: initial,
     }
     context.default = {route: initial, history: [initial]}
@@ -100,35 +112,43 @@ export const Navigator = function({initial, children, dispatch}) {
     if(children) {
       var props = dispatcher(dispatch, context)
       var {screens, navigation, components} = reducer(React.Children.toArray(children), props)
-      /**
-       * Set state holder empty at once
-       */
-      if(props.navigate.history.length == 1) {
 
-        if(screens) {
-          context.screens = screens
+      if(screens) {
+        /**
+         * Execute once before the initial route
+         */
+        if(props.navigate.history.length == 1) {
+          /**
+          * Execute event before the initial screen mounted
+          */
+          props.events.emit('start')
+          /**
+          * Add native listener
+          */
+          Linking.addEventListener('url', props.navigate.link)
+          BackHandler.addEventListener('hardwareBackPress', props.navigate.back)
         }
 
-        Linking.addEventListener('url', props.navigate.link)
-        BackHandler.addEventListener('hardwareBackPress', props.navigate.back)
-      }
-
-      /**
-       * Render components
-       */
-      return [
-        ((name) => {
-          if(Object.keys(context.screens).length > 0) {
-
+        /**
+         * Render components
+         */
+        return [
+          ((name) => {
             var child = null
-            var Component = context.screens[name].component
-
+            var screen = context.screens[name]
+            var Component = screen.component
             if(Component) {
               child = (
                 <Component
                   ref={(ref) => {
                     if(ref) {
-                      context.screens[name].ref = ref
+                      screen.ref = ref
+                      /**
+                       * Similar to "getDerivedStateFromProps" but not static
+                       */
+                      if(ref.derive) {
+                        screen.state.push(ref.derive(props, ref.state))
+                      }
                     }
                   }}
                   {...props}
@@ -136,32 +156,32 @@ export const Navigator = function({initial, children, dispatch}) {
               )
             }
             return React.createElement(View, {flex: 1, key: name.toLowerCase()}, child)
-          }
-        })
-        (props.route.name),
-        /**
-         * Navigation
-         */
-        ((child) => {
-          if(child) {
-            var names = child.props.children.map(i => i.props.name)
+          })
+          (props.route.name),
+          /**
+           * Navigation
+           */
+          ((child) => {
+            if(child) {
+              var names = child.props.children.map(i => i.props.name)
 
-            if(names.includes(props.route.name)) {
-              return React.cloneElement(child, {...child.props, key: 'navigation'}, child.props.children)
+              if(names.includes(props.route.name)) {
+                return React.cloneElement(child, {...child.props, key: 'navigation'}, child.props.children)
+              }
             }
-          }
-        })
-        (navigation),
-        /**
-         * Other components
-         */
-        ...((items) => items.map((child, key) => {
-          return (
-            React.cloneElement(child, {...child.props, key}, child.props.children)
-          )
-        }))
-        (components)
-      ]
+          })
+          (navigation),
+          /**
+           * Other components
+           */
+          ...((items) => items.map((child, key) => {
+            return (
+              React.cloneElement(child, {...child.props, key}, child.props.children)
+            )
+          }))
+          (components)
+        ]
+      }
     }
   }
   throw Error('No initial route name defined')
